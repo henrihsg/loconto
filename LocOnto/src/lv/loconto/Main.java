@@ -1,5 +1,7 @@
 package lv.loconto;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.ReadWrite;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -10,23 +12,21 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		//Make a TDB-backed dataset
-		String directory = "BD/Dataset1" ;
-		Dataset dataset = TDBFactory.createDataset(directory) ;
+		OntoCreator.Create();
 		
-		Model model = ModelFactory.createDefaultModel();
+		//Make a TDB-backed dataset		
+		String directory = "C:\\Users\\Henry\\DB";
+		Dataset dataset = TDBFactory.createDataset(directory);
 		
-		dataset.begin(ReadWrite.WRITE);
-		dataset.addNamedModel("Test", model);
-		
-		/*dataset.begin(ReadWrite.READ) ;
-		// Get model inside the transaction
-		Model model = dataset.getDefaultModel() ;
+		dataset.begin(ReadWrite.READ);
+		Model m = dataset.getDefaultModel();
+		System.out.println("=======READING FROM DB===========");
+		OntModel ontMod = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM,m);
+		m.write(System.out, "RDF/XML");
+		System.out.println("============END==============");
 		dataset.end() ;
-		dataset.begin(ReadWrite.WRITE) ;
-		model = dataset.getDefaultModel() ;*/
-		dataset.end() ;
-
+		System.out.println("============ONTMODEL==============");
+		ontMod.writeAll(System.out, "RDF/XML");
 	}
 
 }
